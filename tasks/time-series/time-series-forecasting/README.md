@@ -5,7 +5,7 @@ Weathernet is a simple LSTM time series forecasting network to predict the tempe
 
 ## Data
 
-Data is from the German Weather Service which provides historical climate data for 78 weather stations in Germany. The data is freely available on its website (https://www.dwd.de/DE/leistungen/klimadatendeutschland/klarchivtagmonat.html).
+Data is from the German Weather Service which provides historical daily climate data for 78 weather stations in Germany. The data is freely available on its website (https://www.dwd.de/DE/leistungen/klimadatendeutschland/klarchivtagmonat.html).
 This example is using the data from the Hamburg station (1951 until 2018)
 
 ## LSTM Network
@@ -36,6 +36,8 @@ Project is using MLflow and has 2 entry-points. One for a complete training run 
 ```bash
 mlflow run -e train_weathernet.py /home/dominik/ai-platform/tasks/time-series/time-series-forecasting/
 ```
+
+### Running prediction with pre-trained model
 ```bash
 mlflow run -e main.py /home/dominik/ai-platform/tasks/time-series/time-series-forecasting/
 ```
