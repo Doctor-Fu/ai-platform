@@ -1,0 +1,10 @@
+name: time-series-forecasting
+
+conda_env: conda.yaml
+
+entry_points:  
+  main:
+    command: "python main.py"
+
+  train_weathernet:
+    command: "python train_weathernet.py"
