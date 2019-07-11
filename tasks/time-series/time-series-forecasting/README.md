@@ -1,7 +1,7 @@
 # Time Series Forecasting
 ## Weathernet
 
-Weathernet is a simple LSTM time series forecasting network to predict the temperature of the next day, based on the previous 32 days. Currently it supports only max temperature but can be easily extended to other parameters (e.g. pressure, humidity, etc.
+Weathernet is a simple LSTM time series forecasting network to predict the temperature of the next day, based on the previous 32 days. Currently it supports only max temperature but can be easily extended to other parameters (e.g. pressure, humidity, etc.)
 
 ## Data
 
@@ -30,17 +30,26 @@ Non-trainable params: 0
 
 ## Usage
 
-Project is using MLflow and has 2 entry-points. One for a complete training run followed by a prediction and on for prediction using pre-trained model. 
+Project is using MLflow and has 2 entry-points. One for a complete training run followed by a prediction and one for prediction using pre-trained model. 
+Tensorflow backend is used for training - duration 15s/epoch on GTX1080
 
 ### Training and predicting
 ```bash
-mlflow run -e train_weathernet.py /home/dominik/ai-platform/tasks/time-series/time-series-forecasting/
+mlflow run tasks/time-series/time-series-forecasting -e train_weathernet
 ```
 
 ### Running prediction with pre-trained model
 ```bash
-mlflow run -e main.py /home/dominik/ai-platform/tasks/time-series/time-series-forecasting/
+mlflow run tasks/time-series/time-series-forecasting -e main
 ```
+
+## Todo
+- Add mlflow metrics
+- Add mlflow logs
+- Add more cities to choose from
+- Add parameters for flexibility of model and training
+- Finetune model to catch better on outliers in time-series
+- 
 
 
 
