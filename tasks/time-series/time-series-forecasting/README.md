@@ -42,6 +42,7 @@ Replace CITY with one of the following:
 - Stuttgart
 - Frankfurt
 - Hannover
+
 If not specified, CITY defaults to Hamburg. See MLProject file.
 
 ### Running prediction with pre-trained model
@@ -55,6 +56,7 @@ Replace CITY with one of the following:
 - Stuttgart
 - Frankfurt
 - Hannover
+
 If not specified, CITY defaults to Hamburg. See MLProject file.
 
 ## MLFlow
