@@ -70,9 +70,9 @@ localhost:5000
 ``` 
 
 ## Todo
-- Add mlflow metrics
-- Add mlflow logs
-- Add more cities to choose from
+- DONE: Add mlflow metrics
+- DONE: Add mlflow logs
+- DONE: Add more cities to choose from
 - Finetune model to catch better on outliers in time-series
 
 
