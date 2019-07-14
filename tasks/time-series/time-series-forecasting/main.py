@@ -27,6 +27,11 @@ set_random_seed(2)
 # Previous Tensorflow Session
 tf.keras.backend.clear_session()
 
+# Parse Arguments
+parser = argparse.ArgumentParser()
+parser.add_argument("city_name", help="Name of the city to get climate data", type=str)
+args = parser.parse_args()
+
 # Define Variables
 lookback_window = 32
 steps_per_epoch = 364
@@ -34,13 +39,15 @@ val_steps = 364 * 30
 LSTMunits = 100
 predict_steps = 364 * 10
 predict_shift = 0
+city = args.city_name
 
 # Working directories
-model_filepath = 'Weather_Net.hf5'
+model_filepath = 'Weather_Net_'+city+'.hf5'
+image_dir = 'images_prediction/'
 
 # Load Dataset - Daily climate data Hamburg 1951-01-01 - 2018-12-31
 # 0 Mess_Datum - 1 Wind_max - 2 Wind_mittel - 3 Niederschlagshoehe - 4 Sonnenstunden - 5 Schneehoehe - 6 Bedeckung_Stunden - 7 Luftdruck - 8 Temp_mittel - 9 Temp_max - 10 Temp_Min - 11 Temp_Boden - 12 Relative_Feuchte
-dataset = np.loadtxt('hamburg_climate_1951_2018.csv', dtype='float32', delimiter=';')
+dataset = np.loadtxt(city+'.csv', dtype='float32', delimiter=';')
 
 # Chose which variable to predict - in this case 9 - Temp_max
 variable_to_forecast = 9
@@ -73,8 +80,9 @@ def plot_series(yhat, ground_truth):
     (fig, ax) = plt.subplots()
     ax.plot(scaler2.inverse_transform(ground_truth), color='green', label="Truth")
     ax.plot(scaler2.inverse_transform(yhat), color='blue', label="Prediction")
-    plt.title('Daily Temperature Hamburg')
+    plt.title('Daily Temperature '+city)
     plt.legend(loc='best')
+    plt.savefig(image_dir+city+'_Prediction.png')
     plt.show()
 
 if __name__ == '__main__':
@@ -89,26 +97,22 @@ if __name__ == '__main__':
     tf.keras.backend.clear_session()
 
     # Set pretrained model
-    keras_model_path = sys.argv[1] if len(sys.argv) > 1 else 'Weather_Net.hf5'
+    keras_model_path = 'Weather_Net_'+city+'.hf5'
 
     # Load pretrained model
     weathernet = keras.models.load_model(keras_model_path)
     weathernet.summary
-
-    # Define city data file
-    city_name = sys.argv[2] if len(sys.argv) > 2 else 'hamburg_climate_1951_2018.csv'
 
     # Make prediction
     yhat = weathernet.predict_generator(datagen_predict(), steps=predict_steps)
     ground_truth = np.reshape(dataset[lookback_window + 1 + steps_per_epoch + predict_shift: lookback_window + 1 + steps_per_epoch + predict_steps + predict_shift, 0], newshape=(predict_steps, 1))
     plot_series(yhat, ground_truth)
 
-    #with mlflow.start_run():
-
-    #with mlflow.start_run():
-
-        #mlflow.log_param("keras_model_path", keras_model_path)
-        #mlflow.log_param("city_name", city_name)
-
-        # mlflow.log_artifact(output_photo_name, "output_photo_name")
+    with mlflow.start_run():
+        # print out current run_uuid
+        run_uuid = mlflow.active_run().info.run_uuid
+        print("MLflow Run ID: %s" % run_uuid)
+        mlflow.log_artifacts(image_dir, "images")
+        mlflow.log_param('City_Name', city)
+        mlflow.log_param('Prediction_steps', predict_steps)
 
