@@ -27,23 +27,17 @@ set_random_seed(2)
 # Previous Tensorflow Session
 tf.keras.backend.clear_session()
 
-# Parse Arguments
-parser = argparse.ArgumentParser()
-parser.add_argument("epochs", help="Number of training epochs.", type=int)
-parser.add_argument("look_back_window", help="Number of past days used for input into weathernet", type=int)
-parser.add_argument("city_name", help="Name of the city to get climate data", type=str)
-args = parser.parse_args()
-
+arr = sys.argv
 # Define Variables
-lookback_window = args.look_back_window
+lookback_window = 32
 steps_per_epoch = 364 * 10
-epochs = args.epochs
+epochs = 30
 val_steps = 364 * 2
 LSTMunits = 100
 predict_steps = 364 * 4
 predict_shift = 0
-city = args.city_name
-
+city = sys.argv[1]
+print ('Running Weathernet for '+city)
 # Working directories
 model_filepath = 'Weather_Net_'+city+'.hf5'
 image_dir = 'images/'
@@ -118,9 +112,9 @@ def plot_series(yhat, ground_truth):
     (fig, ax) = plt.subplots()
     ax.plot(scaler2.inverse_transform(ground_truth), color='green', label="Truth")
     ax.plot(scaler2.inverse_transform(yhat), color='blue', label="Prediction")
-    plt.title('Daily Temperature [max] Hamburg')
+    plt.title('Daily Temperature [max] '+city)
     plt.legend(loc='best')
-    plt.savefig(image_dir+'Daily_Temp.png')
+    plt.savefig(image_dir+city+'Daily_Temp.png')
     plt.show()
 
 # Plot metrics and save figure for MLflow
@@ -130,9 +124,9 @@ def plot_metrics(hist):
     (fig, ax) = plt.subplots()
     ax.plot(loss, color='green', label="Loss")
     ax.plot(val_loss, color='blue', label="Validation Loss")
-    plt.title('Training Loss/Validation Loss')
+    plt.title('Training Loss/Validation Loss '+city)
     plt.legend(loc='best')
-    plt.savefig(image_dir + 'Loss_Diag.png')
+    plt.savefig(image_dir +city+ 'Loss_Diag.png')
     plt.show()
 
 # Get loss from keras history object
@@ -172,5 +166,3 @@ if __name__ == '__main__':
         mlflow.log_param('Steps_per_epoch', steps_per_epoch)
         mlflow.log_param('Validations_steps', val_steps)
         mlflow.log_param('Prediction_steps', predict_steps)
-
-

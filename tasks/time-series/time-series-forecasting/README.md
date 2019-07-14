@@ -35,21 +35,46 @@ Tensorflow backend is used for training - duration 15s/epoch on GTX1080
 
 ### Training and predicting
 ```bash
-mlflow run tasks/time-series/time-series-forecasting -e train_weathernet
+mlflow run tasks/time-series/time-series-forecasting -e train_weathernet -P city=CITY
 ```
+Replace CITY with one of the following:
+- Hamburg
+- Stuttgart
+- Frankfurt
+- Hannover
+If not specified, CITY defaults to Hamburg. See MLProject file.
 
 ### Running prediction with pre-trained model
 ```bash
-mlflow run tasks/time-series/time-series-forecasting -e main
+mlflow run tasks/time-series/time-series-forecasting -e main -P city=CITY
 ```
+Pretrained model required.
+
+Replace CITY with one of the following:
+- Hamburg
+- Stuttgart
+- Frankfurt
+- Hannover
+If not specified, CITY defaults to Hamburg. See MLProject file.
+
+## MLFlow
+
+Added logging of mlflow metrics and parameters as well as artifacts (loss curves, predictions vs. ground truth)
+Start MLflow UI from the command line after training/predicting with: 
+```bash
+mlflow ui
+```
+In browser enter:
+```bash
+localhost:5000
+``` 
 
 ## Todo
 - Add mlflow metrics
 - Add mlflow logs
 - Add more cities to choose from
-- Add parameters for flexibility of model and training
 - Finetune model to catch better on outliers in time-series
-- 
+
 
 
 

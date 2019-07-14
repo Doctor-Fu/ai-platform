@@ -4,7 +4,11 @@ conda_env: conda.yaml
 
 entry_points:  
   main:
-    command: "python main.py"
+    parameters:
+      city: {type: string, default: 'Hamburg'}
+    command: "python main.py {city}"
 
   train_weathernet:
-    command: "python train_weathernet.py"
+    parameters:
+      city: {type: string, default: 'Hamburg'}      
+    command: "python train_weathernet.py {city}"

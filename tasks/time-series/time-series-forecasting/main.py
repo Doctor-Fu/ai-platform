@@ -39,7 +39,7 @@ val_steps = 364 * 30
 LSTMunits = 100
 predict_steps = 364 * 10
 predict_shift = 0
-city = args.city_name
+city = sys.argv[1]
 
 # Working directories
 model_filepath = 'Weather_Net_'+city+'.hf5'
@@ -52,7 +52,7 @@ dataset = np.loadtxt(city+'.csv', dtype='float32', delimiter=';')
 # Chose which variable to predict - in this case 9 - Temp_max
 variable_to_forecast = 9
 single_val_ds = dataset[:, variable_to_forecast].T
-single_val_ds = np.reshape(single_val_ds, newshape=(24837, 1))
+single_val_ds = np.reshape(single_val_ds, newshape=(dataset.shape[0], 1))
 print(single_val_ds.shape)
 
 # Transform features to range (-1, 1) with sklearn MinMaxScaler
@@ -113,6 +113,6 @@ if __name__ == '__main__':
         run_uuid = mlflow.active_run().info.run_uuid
         print("MLflow Run ID: %s" % run_uuid)
         mlflow.log_artifacts(image_dir, "images")
-        mlflow.log_param('City_Name', city)
+        #mlflow.log_param('City_Name', city)
         mlflow.log_param('Prediction_steps', predict_steps)
 
