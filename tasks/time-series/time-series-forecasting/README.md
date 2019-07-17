@@ -7,6 +7,7 @@ Weathernet is a simple LSTM time series forecasting network to predict the tempe
 
 Data is from the German Weather Service which provides historical daily climate data for 78 weather stations in Germany. The data is freely available on its website (https://www.dwd.de/DE/leistungen/klimadatendeutschland/klarchivtagmonat.html) - German only. More city data can be downloaded from the website:
 ![](DWD/DWD_Data_Download.jpg)
+Preprocessing is required for data to be used.
 This example is using the data from the Hamburg station (1951 until 2018)
 
 ## LSTM Network
@@ -54,9 +55,7 @@ localhost:5000
 ``` 
 
 ## Todo
-- Add mlflow metrics
-- Add mlflow logs
-- Add more cities to choose from
+- Preprocessing data
 - Finetune model to catch better on outliers in time-series
 
 
