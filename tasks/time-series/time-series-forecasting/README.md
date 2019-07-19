@@ -58,7 +58,7 @@ localhost:5000
 ``` 
 
 ## Todo
-- Create multistep model
+- Create multistep workflow
 - Finetune model to catch better on outliers in time-series
 
 
