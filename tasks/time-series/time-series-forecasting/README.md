@@ -32,14 +32,17 @@ Non-trainable params: 0
 
 ## Usage
 
-Project is using MLflow and has one entry-points. 
+Project is using MLflow and has two entry-points. 
 Tensorflow backend is used for training - duration 15s/epoch on GTX1080
 
+### Training only
+```bash
+mlflow run . -e train_weathernet -P city=CITY
+```
 ### Training and predicting
 ```bash
 mlflow run . -e main -P city=CITY
 ```
-
 Currently as an example Hamburg is supported as CITY.
 
 ## MLFlow
@@ -55,7 +58,7 @@ localhost:5000
 ``` 
 
 ## Todo
-- Preprocessing data
+- Create multistep model
 - Finetune model to catch better on outliers in time-series
 
 

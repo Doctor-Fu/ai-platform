@@ -29,7 +29,6 @@ now = datetime.datetime.utcnow()
 tf.keras.backend.clear_session()
 tf.logging.set_verbosity(tf.logging.ERROR)
 
-
 # Define Variables
 arr = sys.argv
 lookback_window = 32
@@ -116,10 +115,6 @@ def build_and_compile_model():
     weathernet.summary()
     return weathernet
 
-#Load existing model
-def load_pretrained_model():
-    weathernet = keras.models.load_model(model_filepath)
-    return weathernet
 # Predict
 def predict_weather(trained_weathernet):
     yhat = trained_weathernet.predict_generator(datagen_predict(), steps=predict_steps)
@@ -133,7 +128,7 @@ def plot_series(yhat, ground_truth):
     ax.plot(scaler2.inverse_transform(yhat), color='blue', label="Prediction")
     plt.title('Daily Temperature [max] '+city)
     plt.legend(loc='best')
-    plt.savefig(image_dir+city+'_Daily_Temp_Predicted.png')
+    plt.savefig(image_dir+str(now)+'_'+city+'_Daily_Temp_Predicted.png')
     plt.show()
 
 # Plot metrics and save figure for MLflow
@@ -145,7 +140,7 @@ def plot_metrics(hist):
     ax.plot(val_loss, color='blue', label="Validation Loss")
     plt.title('Training Loss/Validation Loss '+city)
     plt.legend(loc='best')
-    plt.savefig(image_dir +city+ '_Loss_Diag.png')
+    plt.savefig(image_dir +str(now)+'_'+city+ '_Loss_Diag.png')
     plt.show()
 
 # Get loss from keras history object
@@ -162,39 +157,27 @@ def val_loss(hist):
 
 if __name__ == '__main__':
     warnings.filterwarnings("ignore")
-    if os.path.isfile(model_filepath) == True:
-        loaded_weathernet = load_pretrained_model()
-        predict_weather(loaded_weathernet)
-        with mlflow.start_run():
-            run_uuid = mlflow.active_run().info.run_uuid
-            print("MLflow Run ID: %s" % run_uuid)
-            mlflow.keras.log_model(loaded_weathernet, "models")
-            mlflow.log_artifact(image_dir +  city + '_Loss_Diag.png', "images")
-            mlflow.log_artifact(image_dir +  city + '_Daily_Temp_Predicted.png', "images")
-            mlflow.log_param('City_Name', city)
-            mlflow.log_param('Prediction_steps', predict_steps)
-    else:
-        #Build model
-        weathernet = build_and_compile_model()
-        #Train model
-        results = weathernet.fit_generator(datagen_train(), steps_per_epoch=steps_per_epoch, workers=10, max_queue_size=100, epochs=epochs, verbose=2, validation_steps=val_steps, validation_data=datagen_val())
-        #Save trained model
-        weathernet.save(filepath=model_filepath)
-        # Run prediction on trained model
-        predict_weather(weathernet)
-        # Plot the metrics of the trained model
-        plot_metrics(results)
-        # Log metrics, parameters, artifacts and log the model
-        with mlflow.start_run():
-            run_uuid = mlflow.active_run().info.run_uuid
-            print("MLflow Run ID: %s" % run_uuid)
-            mlflow.keras.log_model(weathernet, "models")
-            mlflow.log_artifact(image_dir +  city + '_Loss_Diag.png', "images")
-            mlflow.log_artifact(image_dir +  city + '_Daily_Temp_Predicted.png', "images")
-            mlflow.log_metric('Loss', loss(results))
-            mlflow.log_metric('Validation Loss', val_loss(results))
-            mlflow.log_param('City_Name', city)
-            mlflow.log_param('Training_Epochs', epochs)
-            mlflow.log_param('Steps_per_epoch', steps_per_epoch)
-            mlflow.log_param('Validations_steps', val_steps)
-            mlflow.log_param('Prediction_steps', predict_steps)
+    #Build model
+    weathernet = build_and_compile_model()
+    #Train model
+    results = weathernet.fit_generator(datagen_train(), steps_per_epoch=steps_per_epoch, workers=10, max_queue_size=100, epochs=epochs, verbose=2, validation_steps=val_steps, validation_data=datagen_val())
+    #Save trained model
+    weathernet.save(filepath=model_filepath)
+    # Run prediction on trained model
+    predict_weather(weathernet)
+    # Plot the metrics of the trained model
+    plot_metrics(results)
+    # Log metrics, parameters, artifacts and log the model
+    with mlflow.start_run():
+        run_uuid = mlflow.active_run().info.run_uuid
+        print("MLflow Run ID: %s" % run_uuid)
+        mlflow.keras.log_model(weathernet, "models")
+        mlflow.log_artifact(image_dir + str(now) + '_' + city + '_Loss_Diag.png', "images")
+        mlflow.log_artifact(image_dir + str(now) + '_' + city + '_Daily_Temp_Predicted.png', "images")
+        mlflow.log_metric('Loss', loss(results))
+        mlflow.log_metric('Validation Loss', val_loss(results))
+        mlflow.log_param('City_Name', city)
+        mlflow.log_param('Training_Epochs', epochs)
+        mlflow.log_param('Steps_per_epoch', steps_per_epoch)
+        mlflow.log_param('Validations_steps', val_steps)
+        mlflow.log_param('Prediction_steps', predict_steps)
