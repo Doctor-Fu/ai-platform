@@ -39,7 +39,7 @@ Tensorflow backend is used for training - duration 15s/epoch on GTX1080
 ```bash
 mlflow run . -e train_weathernet -P city=CITY
 ```
-### Training and predicting
+### Training and/or predicting
 ```bash
 mlflow run . -e main -P city=CITY
 ```
